@@ -61,12 +61,7 @@ public class UniqueIndexTests {
     ProductRepository productRepository;
 
     @Test
-    public void uniquePropertyCallsConverters(){
-
-    }
-
-    @Test
-    public void uniqueRelationshipDoesNotCallConverters(){
+    public void shouldRetrieveCatalogFromProduct(){
         Catalog catalog = new Catalog("Cool Stuff");
         catalogRepository.save(catalog);
         assertThat("repository contains one catalog", catalogRepository.count(), is(1l));
