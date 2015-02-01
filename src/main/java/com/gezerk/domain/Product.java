@@ -3,6 +3,8 @@ package com.gezerk.domain;
 import org.neo4j.graphdb.Direction;
 import org.springframework.data.neo4j.annotation.*;
 
+import java.util.UUID;
+
 /**
  * Created by George Simpson on 1/31/2015.
  */
@@ -13,8 +15,13 @@ public class Product {
 
     public String name;
 
-//    @Fetch
-//    public Catalog catlog;//Products are not unique, but they are exclusive.  A product can only be listed in one catalog.
+
+    @Fetch
+    @Indexed(unique = true)
+    @GraphProperty(propertyType = Supplier.class)
+    @RelatedTo(type = "SUPPLIES", direction = Direction.OUTGOING)
+    public Supplier supplier;
+
 
     @Fetch
     @Indexed(unique = true)
