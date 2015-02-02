@@ -9,6 +9,7 @@ import com.gezerk.domain.Product;
 import com.gezerk.domain.Supplier;
 import com.gezerk.repositories.CatalogRepository;
 import com.gezerk.repositories.ProductRepository;
+import com.gezerk.repositories.SupplierRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo4j.graphdb.GraphDatabaseService;
@@ -72,6 +73,10 @@ public class UniqueIndexTests {
     @Autowired
     ProductRepository productRepository;
 
+    @Autowired
+    SupplierRepository supplierRepository;
+
+
     @Test
     public void shouldRetrieveCatalogFromProduct(){
         //Catalog is related to Product via Listing
@@ -92,11 +97,14 @@ public class UniqueIndexTests {
 
     @Test
     public void shouldRetrieveSupplierFromProduct(){
-        //Supplier is related to product
+        //Supplier is related to product directly
+        Supplier supplier = new Supplier("Woot Company");
+        supplierRepository.save(supplier);
+
 
         Product product = new Product();
         product.name = "widget";
-        product.supplier = new Supplier("Woot Company");
+        product.supplier = supplier;
 
         productRepository.save(product);
         assertThat("product can be retrieved from repo", productRepository.findOne(product.nodeId), is(product));

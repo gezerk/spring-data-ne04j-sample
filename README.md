@@ -25,19 +25,26 @@ Using spring-data-neo4j:3.2.1.RELEASE or spring-data-neo4j:3.3.0.BUILD-SNAPSHOT 
 
 # Tests
 
-There are two methods for setting a relationship according to [Good Relationships](http://docs.spring.io/spring-data/neo4j/docs/current/reference/html/#reference_programming_model_relationships_relatedto).
-The first takes a simple...
-[Failing Test](src/test/java/UniqueIndexTests.java) - shouldRetrieveSupplierFromProduct()
-The second
-[Failing Test](src/test/java/UniqueIndexTests.java) - shouldRetrieveCatalogFromProduct()
+There are two methods for setting a relationship according to
+[Good Relationships](http://docs.spring.io/spring-data/neo4j/docs/current/reference/html/#reference_programming_model_relationships_relatedto).
+
+Using a single field:
+[Failing Test](src/test/java/com/gezerk/UniqueIndexTests.java) - shouldRetrieveSupplierFromProduct()
+
+Using a relationship entity:
+[Failing Test](src/test/java/com/gezerk/UniqueIndexTests.java) - shouldRetrieveCatalogFromProduct()
+
+Both tests fail with the exception above.
 
 # Observations
 
-https://jira.spring.io/browse/DATAGRAPH-479
+There is on open issue for non-primitive property types failing when using a unique index [here](https://jira.spring.io/browse/DATAGRAPH-479).  The exception listed in that issue is the same, a failure to recognize the property type.
+It would appear that SDN is not calling the registered converter for the property type (converters are registered in the tests above).
+The @GraphProperty(propertyType = Supplier.class) annotation was added to try and force loading of the converters.  The converters for Supplier and Catalog log when they are registered and when they are called.
+In both tests, the converters were registered, but not called.
+
+Debugging Spring Data Neo4j shows that the decision to load converters is made in the EntityStateHandler.class
+(3.3.0-BUILD-SNAPSHOT line 170) by calling the Neo4jPersistentPropertyImpl.isSerializablePropertyField() method.  The isSerializablePropertyField() method returns false if the property is a relationship.
+That would indicate that no conversion would ever occur for a relationship.
 
 
-Research indicates that this error occurs when no converter is available for the Node property.  In this case the 'listing' property on Product.
-Attempted to correct the issue by creating converters for Listing.class and registering them with ConversionService.
-The converters are not called when the listing property on Product is a relationship.
-Changing Product.listing to an entity property (by removing the @RelatedToVia annotation) causes the converters to be called and correctly converts the property.
-This remains true even if I add @GraphProperty(propertyType = Listing.class) to the relationship.
