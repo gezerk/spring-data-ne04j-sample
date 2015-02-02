@@ -8,7 +8,7 @@ That is, a product can only be listed in a single catalog.
 Consider a stack of catlogs that may or may not have the same products in them.
 
 # Expectations
-Given an existing product with a relationship to a catalog via a listing (annotated with @Indexed(unique = true)
+Given an existing product with a relationship to a catalog via a listing (annotated with @Indexed(unique = true))
 
 When I save a product with the same properties in the ProductRepository
 
