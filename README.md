@@ -30,9 +30,11 @@ There are two methods for setting a relationship according to
 [Good Relationships](http://docs.spring.io/spring-data/neo4j/docs/current/reference/html/#reference_programming_model_relationships_relatedto).
 
 Using a single field:
+
 -[Failing Test](src/test/java/com/gezerk/UniqueIndexTests.java) - `shouldRetrieveSupplierFromProduct()` : fails with IllegalArgumentException - not a supported property type.
 
 Using a relationship entity:
+
 -[Failing Test](src/test/java/com/gezerk/UniqueIndexTests.java) - `shouldRetrieveCatalogFromProduct()` : fails with IllegalArgumentException - not a supported property type.
 
 
