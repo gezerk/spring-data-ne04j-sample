@@ -24,7 +24,9 @@ Using spring-data-neo4j:3.2.1.RELEASE or spring-data-neo4j:3.3.0.BUILD-SNAPSHOT 
 ```org.springframework.dao.InvalidDataAccessResourceUsageException: Error executing statement MERGE (n:`Product` {`listing`: {value}}) ON CREATE SET n={props}  return n; nested exception is org.springframework.dao.InvalidDataAccessResourceUsageException: Error executing statement MERGE (n:`Product` {`listing`: {value}}) ON CREATE SET n={props}  return n; nested exception is java.lang.IllegalArgumentException: [com.gezerk.domain.Listing@7066363:com.gezerk.domain.Listing] is not a supported property value```
 
 # Tests
-The [`shouldNotCreateDuplicateProduct()`](src/test/java/com/gezerk/UniqueIndexTests.java) test demonstrates the desired behavior for products.  A duplicate product should be merged with the existing product.
+The [`shouldNotCreateDuplicateProduct()`](src/test/java/com/gezerk/UniqueIndexTests.java) test demonstrates the desired behavior for products.
+A duplicate product should be merged with the existing product.
+Comment out the unique index annotations on Product and run this test to see duplicate products created(this test fails with IllegalArgumentException when unique indexes are used).
 
 There are two methods for setting a relationship according to
 [Good Relationships](http://docs.spring.io/spring-data/neo4j/docs/current/reference/html/#reference_programming_model_relationships_relatedto).
