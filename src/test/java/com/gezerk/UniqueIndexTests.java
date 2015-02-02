@@ -84,9 +84,14 @@ public class UniqueIndexTests {
         catalogRepository.save(catalog);
         assertThat("repository contains one catalog", catalogRepository.count(), is(1l));
 
+        Supplier supplier = new Supplier("Woot Company");
+        supplierRepository.save(supplier);
+        assertThat("repository contains one supplier", supplierRepository.count(), is(1l));
+
         Product product = new Product();
         product.name = "widget";
         product.listedBy(catalog, "Widgets");
+        product.supplier = supplier;
 
         productRepository.save(product);
         assertThat("product can be retrieved from repo", productRepository.findOne(product.nodeId), is(product));
@@ -109,6 +114,34 @@ public class UniqueIndexTests {
         productRepository.save(product);
         assertThat("product can be retrieved from repo", productRepository.findOne(product.nodeId), is(product));
         assertThat("product contains supplier", productRepository.findOne(product.nodeId).supplier.name, is("Woot Company"));
+    }
+
+    @Test
+    public void shouldNotCreateDuplicateProduct(){
+        Catalog catalog = new Catalog("Cool Stuff");
+        catalogRepository.save(catalog);
+        assertThat("repository contains one catalog", catalogRepository.count(), is(1l));
+
+        Supplier supplier = new Supplier("Woot Company");
+        supplierRepository.save(supplier);
+        assertThat("repository contains one supplier", supplierRepository.count(), is(1l));
+
+        Product product = new Product();
+        product.name = "widget";
+        product.listedBy(catalog, "Widgets");
+        product.supplier = supplier;
+
+        productRepository.save(product);
+        assertThat("product repository contains one product", productRepository.count(), is(1l));
+
+        Product duplicateProduct = new Product();
+        duplicateProduct.name = product.name;
+        duplicateProduct.listedBy(product.listing.catalog, product.listing.category);
+        duplicateProduct.supplier = supplier;
+
+        productRepository.save(duplicateProduct);
+        assertThat("product repos still contains one product", productRepository.count(), is(1l));
+
     }
 
 
